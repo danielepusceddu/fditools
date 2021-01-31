@@ -208,6 +208,9 @@ def baseconversion(basesrc: int, basedest: int, n: str):
     return result
 
 def twos_complement_convert(n: int, num_bits: int):
+    assert n >= -(2**(num_bits - 1)), f'{n} (base 10) cannot be represented with only {num_bits} bits (two\'s complement).'
+    assert n <= 2**(num_bits - 1) - 1, f'{n} (base 10) cannot be represented with only {num_bits} bits (two\'s complement).'
+
     negative = n < 0
     if negative:
         n *= -1
