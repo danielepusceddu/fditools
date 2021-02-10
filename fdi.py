@@ -16,3 +16,5 @@ if method.startswith('base'):
 elif method == 'sum':
     diff = 'diff' in argv
     algorithms.sum_dec(int(argv[2]), int(argv[3]), int(argv[4]), diff, print_procedure=True)
+elif method == 'buglisi':
+    print(algorithms.italianToBuglisi(' '.join(argv[2:])))

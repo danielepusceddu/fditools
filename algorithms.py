@@ -269,6 +269,17 @@ def sum_dec(x: int, y: int, num_bits: int, difference=False, print_procedure=Tru
 
     return result
 
+def italianToBuglisi(italian: str):
+    translation = {'p': 'b', 't': 'd', 'q': 'g', 'z': 'zz'}
+    result = italian
+    for t in translation:
+        result = result.replace(t, translation[t])
+        result = result.replace(t.upper(), translation[t].upper())
+    result = result.replace('z', 'Z')
+
+    return result
+
+
 def decimalToIEEE(n):
     binary = baseconversion(10, 2, n)
     point_pos = binary.find('.')
@@ -286,3 +297,5 @@ def decimalToIEEE(n):
     normalized = '0.' + binary[meaningful_digit:].replace('.', '')
     print(f'Normalized Mantissa: {normalized}')
     print(f'Exponent:            {exponent}')
+
+
