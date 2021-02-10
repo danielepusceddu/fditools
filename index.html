@@ -18,7 +18,7 @@ Num. Bits: <input type=number name="sum_nbits" id="sum_nbits" value=8 style="wid
   <option value="-">-</option>
 </select>
 <input type=number name="sum_op2" id="sum_op2" value=0 style="width: 60px">
-<button type="button" name="sumbtn" id="sumbtn">Sum / Subtract</button>
+<button type="button" name="sumbtn" id="sumbtn">Sum / Subtract</button> 
 (Insert Base 10 Numbers)
 
 
@@ -67,6 +67,22 @@ To Base
 <br>
 <h3>Output</h3>
 <textarea id="console" rows=30 cols=50 readonly></textarea>
+
+<br/>
+<input type="checkbox" id="advanced" name="advanced" onclick="toggleAdvanced()">
+<label for="advanced">Show Advanced Tools</label><br>
+
+<div id="advancedTools" hidden>
+Italian: <textarea name="italian" id="italian" rows=10 cols=30 ></textarea>
+Buglisi: <textarea name="buglisi" id="buglisi" rows=10 cols=30 readonly ></textarea>
+<button type="button" name="buglisibtn" id="buglisibtn" >Convert</button>
+
+<script>
+function toggleAdvanced(){
+    document.getElementById("advancedTools").hidden = !document.getElementById("advancedTools").hidden
+}
+</script>
+
 <script type="text/python3">
 import sys
 from browser import document
@@ -123,6 +139,17 @@ def html_sum(ev):
         print(e)
 
 sumbtn.bind('click', html_sum)
+
+italiantxt = document['italian']
+buglisitxt = document['buglisi']
+buglisibtn = document['buglisibtn']
+def buglisi(ev):
+    pipe.console = buglisitxt
+    pipe.empty()
+    print(algorithms.italianToBuglisi(italiantxt.value))
+    pipe.console = document['console']
+
+buglisibtn.bind('click', buglisi)
 </script>
 </body>
 </html>
