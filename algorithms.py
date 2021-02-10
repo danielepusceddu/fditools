@@ -270,7 +270,7 @@ def sum_dec(x: int, y: int, num_bits: int, difference=False, print_procedure=Tru
     return result
 
 def italianToBuglisi(italian: str):
-    translation = {'p': 'b', 't': 'd', 'q': 'g', 'z': 'zz'}
+    translation = {'p': 'b', 't': 'd', 'q': 'g', 'c': 'g', 'z': 'zz'}
     result = italian
     for t in translation:
         result = result.replace(t, translation[t])
