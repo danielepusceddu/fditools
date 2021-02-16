@@ -65,6 +65,17 @@ To Base
 <button type="button" name="convertbtn" id="convertbtn">Convert</button>
 
 <br>
+<h3>Base 10 to IEEE 754</h3>
+Number <input type=text name="ieeenum" id="ieeenum" value="119.125" style="width: 60px">
+Precision 
+<select name="ieeeprecision" id="ieeeprecision">
+  <option value="half">Half</option>
+  <option value="single" selected>Single</option>
+  <option value="double">Double</option>
+  <option value="quad">Quad</option>
+</select>
+<button type="button" name="ieeebtn" id="ieeebtn">Convert</button>
+<br>
 <h3>Output</h3>
 <textarea id="console" rows=30 cols=50 readonly></textarea>
 
@@ -150,6 +161,14 @@ def buglisi(ev):
     pipe.console = document['console']
 
 buglisibtn.bind('click', buglisi)
+
+ieeenum = document['ieeenum']
+ieeeprecision = document['ieeeprecision']
+ieeebtn = document['ieeebtn']
+def html_ieee(ev):
+    pipe.empty()
+    algorithms.decimalToIEEE(ieeenum.value, ieeeprecision.value)
+ieeebtn.bind('click', html_ieee)
 </script>
 </body>
 </html>

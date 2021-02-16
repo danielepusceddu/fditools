@@ -103,14 +103,14 @@ def fractionalBaseYToBaseX(fractional, basesrc, basedest, print_procedure = Fals
             print(f'Converting fractional part 0.{fractional} from base 10 to {basedest}.')
 
         f = float('0.' + fractional)
-        while len(result) != 16:
+        while len(result) != 16 and f != 0.0:
             mul = round(f * basedest, 8)
             digit = int(mul)
             digit_str = weights[digit]
 
             if print_procedure:
                 print(f'{basedest} * {f} = {mul} \t\t {digit_str}')
-            f = round(mul - digit, 8)
+            f = round(mul - digit, 8) # obtain the fractional part
 
             result += digit_str
             result_view += digit_str
@@ -227,7 +227,7 @@ def twos_complement_convert(n: int, num_bits: int):
 
     return result
 
-def sum_dec(x: int, y: int, num_bits: int, difference=False, print_procedure=True):
+def sum_dec(x: int, y: int, num_bits: int, difference=False, print_procedure=True, check_overflow=True):
     result = ''
     carry = '0'
 
@@ -258,12 +258,11 @@ def sum_dec(x: int, y: int, num_bits: int, difference=False, print_procedure=Tru
         print('-' * carry_len)
         print(result.rjust(carry_len))
 
-        if carry[0] != carry[1]:
-            print('OVERFLOW: carry ', end='')
-            if carry[0] == '1':
-                print('after sign bit.')
-            else:
-                print('on sign bit.')
+        if check_overflow:
+            bool_str = {True: 'YES', False: 'NO'}
+            print('Overflow:', bool_str[carry[0] != carry[1]])
+            print('Carry on sign bit:', bool_str[carry[1] == '1'])
+            print('Carry outside sign bit:', bool_str[carry[0] == '1'])
 
         print('')
 
@@ -280,9 +279,25 @@ def italianToBuglisi(italian: str):
     return result
 
 
-def decimalToIEEE(n):
+def decimalToIEEE(n, precision='single'):
+    negative = False
+    if float(n) < 0:
+        negative = True
+        n = str(float(n)*-1)
+
+    num_bits = {'half': {'exp': 5, 'mantissa': 10},
+                 'single': {'exp': 8, 'mantissa': 23},
+                 'double': {'exp': 11, 'mantissa': 52},
+                 'quad': {'exp': 15, 'mantissa': 112},
+                }
+
     binary = baseconversion(10, 2, n)
     point_pos = binary.find('.')
+
+    # If point was not found
+    if point_pos == -1:
+        binary += '.0'
+        point_pos = binary.find('.')
 
     # Find first meaningful digit
     meaningful_digit: int = None
@@ -291,11 +306,26 @@ def decimalToIEEE(n):
             meaningful_digit = i
             break
 
-    exponent = point_pos - meaningful_digit
+    exponent = point_pos - meaningful_digit - 1
     if exponent < 0:
         exponent += 1
-    normalized = '0.' + binary[meaningful_digit:].replace('.', '')
-    print(f'Normalized Mantissa: {normalized}')
-    print(f'Exponent:            {exponent}')
+    mantissa = binary[meaningful_digit+1:].replace('.', '')
+    normalized = '1.' + mantissa
 
+    print('\nNormalizing the result.')
+    print(f'Mantissa:              {normalized}')
+    print(f'Without Hidden Bit:    {mantissa}')
+    print(f'Exponent:              {exponent}')
 
+    print('Adjusting the exponent.')
+    exp_bits = num_bits[precision]['exp']
+    bias = 2 ** (exp_bits-1) - 1
+    adjusted_exp = sum_dec(exponent, bias, exp_bits, print_procedure=True, check_overflow=False)
+    mantissa = mantissa.ljust(num_bits[precision]['mantissa'], '0')
+
+    print('Result')
+    sign_bit = '1' if negative else '0'
+    print(f'Sign Bit:   {sign_bit}')
+    print(f'Mantissa:   {mantissa}')
+    print(f'Exponent:   {adjusted_exp}')
+    print(f'End Result: {sign_bit}{adjusted_exp}{mantissa}')
